@@ -28,7 +28,7 @@ export default function Header({
         setIsLoading(true);
         try {
             let response = await fetch(
-                `${import.meta.env.VITE_AUTH_URL}/auth/logout`,
+                `${import.meta.env.VITE_GATEWAY_URL}/auth/logout`,
                 {
                     credentials: "include",
                 }

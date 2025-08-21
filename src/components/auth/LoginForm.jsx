@@ -3,10 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 import { Eye, EyeOff, Mail, Lock, Chrome } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { userActions } from "../../userSlice";
 import { toast } from "sonner";
 

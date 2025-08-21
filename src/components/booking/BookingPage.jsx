@@ -4,19 +4,10 @@ import { LinearBookingPage } from "./LinearBookingPage";
 export default function BookingPage() {
     const location = useLocation();
     const flights = location.state;
-    const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
             <div className="container mx-auto px-4 py-8">
-                {/* <Button
-                    // onClick={() => navigate("/journey")}
-                    variant="ghost"
-                    className="text-slate-600 hover:text-slate-900"
-                >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Journeys
-                </Button> */}
                 <div className="text-center mb-8">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">
                         Complete Your Booking

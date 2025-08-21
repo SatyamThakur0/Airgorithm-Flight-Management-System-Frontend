@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 import { Eye, EyeOff, Mail, Lock, User, Chrome, Phone } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../userSlice";
@@ -20,7 +19,6 @@ export function SignupForm({ onSwitchToLogin }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [agreedToTerms, setAgreedToTerms] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 

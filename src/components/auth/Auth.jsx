@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
-import { useSelector } from "react-redux";
 
 export default function AuthPage() {
-    // const user = useSelector((state) => state.user.user);
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
     const [isLogin, setIsLogin] = useState(true);
 
     return (

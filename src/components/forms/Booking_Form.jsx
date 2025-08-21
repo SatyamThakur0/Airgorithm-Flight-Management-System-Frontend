@@ -19,7 +19,7 @@ export default function BookingForm() {
     const [filteredToCities, setFilteredToCities] = useState([]);
     const navigate = useNavigate();
 
-    const URL = import.meta.env.VITE_FLIGHT_SERVICE_URL;
+    const URL = import.meta.env.VITE_GATEWAY_URL;
 
     useEffect(() => {
         const getMathingAirports = async () => {
