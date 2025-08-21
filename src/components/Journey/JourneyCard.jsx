@@ -20,16 +20,7 @@ const JourneyCard = ({ journey, idx }) => {
         }
         return total.toFixed(2);
     };
-
-    // const formatDuration = (departure, arrival) => {
-    //     const duration = new Date(arrival) - new Date(departure);
-    //     console.log(duration);
-    //     const h = Math.floor(duration / (1000 * 60 * 60));
-    //     const m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-    //     return `${h}h ${m}m`;
-    // };
     function formatDuration(startStr, endStr) {
-        // Convert strings like "16/8/2025, 1:00:00 pm" into Date objects
         function parseDateTime(dateTimeStr) {
             const [datePart, timePart, meridian] = dateTimeStr.split(/[\s,]+/);
             const [day, month, year] = datePart.split("/").map(Number);
@@ -88,7 +79,11 @@ const JourneyCard = ({ journey, idx }) => {
                     <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-4 items-center mb-4 bor der-2 b border-amber-900">
                         <div className="text-center sm:text-left">
                             <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 truncate">
-                                {journey[0].departure_time.split(",")[1]}
+                                {
+                                    new Date(journey[0].departure_time)
+                                        .toLocaleString()
+                                        .split(", ")[1]
+                                }
                             </div>
                             <div className="text-xs sm:text-sm text-gray-600 font-medium truncate text-wrap">{`${
                                 journey.at(-1).route.from.city
@@ -125,7 +120,11 @@ const JourneyCard = ({ journey, idx }) => {
                         </div>
                         <div className="text-center sm:text-right">
                             <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 truncate">
-                                {journey.at(-1).arrival_time.split(",")[1]}
+                                {
+                                    new Date(journey.at(-1).arrival_time)
+                                        .toLocaleString()
+                                        .split(", ")[1]
+                                }
                             </div>
                             <div className="text-xs sm:text-sm text-gray-600 font-medium truncate text-wrap">{`${
                                 journey.at(-1).route.to.city
