@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 
 export function BookingHistory() {
     const [journeys, setJourneys] = useState([]);
-    const navigate = useNavigate();
     useEffect(() => {
         console.log(journeys);
     }, [journeys]);

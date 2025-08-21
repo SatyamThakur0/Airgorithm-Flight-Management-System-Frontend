@@ -1,12 +1,5 @@
 import { Button } from "../ui/button";
-import {
-    ArrowRight,
-    PlayCircle,
-    Users,
-    Globe,
-    TrendingUp,
-    Zap,
-} from "lucide-react";
+import { ArrowRight, Users, Globe, TrendingUp } from "lucide-react";
 import BookingForm from "../forms/Booking_Form";
 
 export default function Hero({ scrollToBooking }) {

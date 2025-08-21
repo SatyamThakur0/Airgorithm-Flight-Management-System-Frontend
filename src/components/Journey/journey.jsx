@@ -1,14 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-    Plane,
-    Filter,
-    SortAsc,
-    Star,
-    Wifi,
-    Coffee,
-    Utensils,
-    ArrowLeft,
-} from "lucide-react";
+import React, { useState } from "react";
+import { Plane, ArrowLeft } from "lucide-react";
 
 import AnimatedBackground from "../ui/AnimatedBackground";
 import { useLocation, useNavigate } from "react-router";
@@ -20,10 +11,6 @@ export default function JourneysPage() {
     const location = useLocation();
     const data = location.state;
     const [journeys, setJourneys] = useState(data);
-    // useEffect(() => {
-    //     console.log(data);
-    // }, [data]);
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 flex justify-center overflow-x-hidden max-w-full w-full box-border">
             <AnimatedBackground mousePosition={mousePosition} />
@@ -52,7 +39,6 @@ export default function JourneysPage() {
                                     </p>
                                 </div>
                             </div>
-                            {/* Removed filters and sort dropdowns */}
                         </div>
                     </div>
                 </div>
@@ -71,7 +57,10 @@ export default function JourneysPage() {
 
                     <div className="space-y-6">
                         {journeys?.map((journey, idx) => (
-                            <div key={idx} className="w-full max-w-full box-border overflow-x-hidden rounded-xl sm:rounded-3xl flex justify-center">
+                            <div
+                                key={idx}
+                                className="w-full max-w-full box-border overflow-x-hidden rounded-xl sm:rounded-3xl flex justify-center"
+                            >
                                 <JourneyCard
                                     key={idx}
                                     journey={journey}

@@ -1,7 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
 import { LinearBookingPage } from "./LinearBookingPage";
-import { Button } from "../ui/button";
-import { ArrowLeft } from "lucide-react";
 
 export default function BookingPage() {
     const location = useLocation();

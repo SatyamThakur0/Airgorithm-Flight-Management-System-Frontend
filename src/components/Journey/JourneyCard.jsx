@@ -1,11 +1,4 @@
-import {
-    ArrowRight,
-    ChevronDown,
-    ChevronUp,
-    Clock,
-    Plane,
-    Star,
-} from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronUp, Clock, Plane } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
+import { Badge } from "../ui/Badge";
 import { FlightCard } from "./FlightCard";
 import {
     Calendar,

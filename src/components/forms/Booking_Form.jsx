@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
-import { MapPin, Calendar, Users, Zap, Plane, Loader2 } from "lucide-react";
+import { MapPin, Calendar, Zap, Plane, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 

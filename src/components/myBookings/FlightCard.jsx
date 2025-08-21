@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
+import { Badge } from "../ui/Badge";
 import {
     Table,
     TableBody,
@@ -8,15 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
-import {
-    Plane,
-    Clock,
-    MapPin,
-    User,
-    Luggage,
-    Utensils,
-    Wifi,
-} from "lucide-react";
+import { Plane, Clock, MapPin, User } from "lucide-react";
 
 export function FlightCard({ flight, index }) {
     const formatDuration = (departure, arrival) => {
