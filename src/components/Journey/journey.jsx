@@ -16,56 +16,16 @@ import JourneyCard from "./JourneyCard";
 
 export default function JourneysPage() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [expandedJourney, setExpandedJourney] = useState(null);
-    const [sortBy, setSortBy] = useState("price");
-    const [filterBy, setFilterBy] = useState("all");
     const navigate = useNavigate();
     const location = useLocation();
     const data = location.state;
     const [journeys, setJourneys] = useState(data);
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
-
-    const handleMouseMove = (e) => {
-        setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    const toggleJourneyExpansion = (journeyId) => {
-        setExpandedJourney(expandedJourney === journeyId ? null : journeyId);
-    };
-
-    const getAmenityIcon = (amenity) => {
-        switch (amenity) {
-            case "wifi":
-                return <Wifi className="w-4 h-4" />;
-            case "meals":
-                return <Utensils className="w-4 h-4" />;
-            case "entertainment":
-                return <Coffee className="w-4 h-4" />;
-            default:
-                return <Star className="w-4 h-4" />;
-        }
-    };
-
-    const getPriceCategoryColor = (category) => {
-        switch (category) {
-            case "Budget":
-                return "bg-green-100 text-green-800 border-green-200";
-            case "Standard":
-                return "bg-blue-100 text-blue-800 border-blue-200";
-            case "Premium":
-                return "bg-purple-100 text-purple-800 border-purple-200";
-            default:
-                return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data]);
 
     return (
-        <div
-            className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 flex justify-center overflow-x-hidden max-w-full w-full box-border"
-            onMouseMove={handleMouseMove}
-        >
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 flex justify-center overflow-x-hidden max-w-full w-full box-border">
             <AnimatedBackground mousePosition={mousePosition} />
 
             <div className="relative z-10 max-w-full w-full box-border overflow-x-hidden">
@@ -111,7 +71,7 @@ export default function JourneysPage() {
 
                     <div className="space-y-6">
                         {journeys?.map((journey, idx) => (
-                            <div className="w-full max-w-full box-border overflow-x-hidden rounded-xl sm:rounded-3xl flex justify-center">
+                            <div key={idx} className="w-full max-w-full box-border overflow-x-hidden rounded-xl sm:rounded-3xl flex justify-center">
                                 <JourneyCard
                                     key={idx}
                                     journey={journey}

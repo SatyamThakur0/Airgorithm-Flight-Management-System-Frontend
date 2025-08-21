@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
 import { MapPin, Calendar, Users, Zap, Plane, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export default function BookingForm() {
     const [fromAirportId, setFromAirportId] = useState("");
@@ -24,9 +25,17 @@ export default function BookingForm() {
         const getMathingAirports = async () => {
             try {
                 let res = await fetch(
-                    `${URL}/flight/airport/city/search/${fromInput}`
+                    `${URL}/flight/airport/airport/search/${fromInput}`
                 );
+                if (res.status == 401) {
+                    localStorage.removeItem("user");
+                    window.location.href = "/auth";
+                    toast.error("Session expired, Login again.");
+                }
                 res = await res.json();
+                if (!res.ok) {
+                    toast.error(res.message);
+                }
                 setFilteredFromCities(res.data);
             } catch (error) {}
         };
@@ -37,9 +46,17 @@ export default function BookingForm() {
         const getMathingAirports = async () => {
             try {
                 let res = await fetch(
-                    `${URL}/flight/airport/city/search/${toInput}`
+                    `${URL}/flight/airport/airport/search/${toInput}`
                 );
+                if (res.status == 401) {
+                    localStorage.removeItem("user");
+                    window.location.href = "/auth";
+                    toast.error("Session expired, Login again.");
+                }
                 res = await res.json();
+                if (!res.ok) {
+                    toast.error(res.message);
+                }
                 setFilteredToCities(res.data);
             } catch (error) {}
         };
@@ -53,7 +70,15 @@ export default function BookingForm() {
             let res = await fetch(
                 `${URL}/flight/flight/search?source=${fromAirportId}&destination=${toAirportId}&date=${date}`
             );
+            if (res.status == 401) {
+                localStorage.removeItem("user");
+                window.location.href = "/auth";
+                toast.error("Session expired, Login again.");
+            }
             res = await res.json();
+            if (!res.ok) {
+                toast.error(res.message);
+            }
             if (res.ok) {
                 setIsSearching(false);
                 navigate("./journey", {

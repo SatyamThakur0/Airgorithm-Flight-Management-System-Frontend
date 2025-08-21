@@ -1,20 +1,76 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Plane, Menu, X } from "lucide-react";
+import { Plane, Menu, X, Loader2 } from "lucide-react";
+import { useLocation, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../userSlice";
+import { toast } from "sonner";
 
-export default function Header({ activeSection, scrollToSection }) {
+export default function Header({
+    activeSection,
+    setActiveSection,
+    scrollToSection,
+}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { user, isAuthenticated } = useSelector((store) => store.user);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/auth");
+        }
+    }, []);
+
+    const logout = async () => {
+        setIsLoading(true);
+        try {
+            let response = await fetch(
+                `${import.meta.env.VITE_AUTH_URL}/auth/logout`,
+                {
+                    credentials: "include",
+                }
+            );
+            if (response.status == 401) {
+                localStorage.removeItem("user");
+                window.location.href = "/auth";
+                toast.error("Session expired, Login again.");
+            }
+            response = await response.json();
+            if (!response.ok) {
+                toast.error(res.message);
+            }
+            if (response.ok) {
+                localStorage.removeItem("user");
+                dispatch(userActions.logout());
+                navigate("/auth");
+                setIsLoading(false);
+            }
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const navigationItems = [
-        { id: "home", label: "Home" },
-        { id: "features", label: "Features" },
-        { id: "services", label: "Services" },
-        { id: "testimonials", label: "Reviews" },
+        { id: "/", label: "Home" },
+        { id: "/my-bookings", label: "My Bookings" },
     ];
 
     const handleNavClick = (sectionId) => {
-        scrollToSection(sectionId);
-        setIsMenuOpen(false);
+        setActiveSection(sectionId);
+        if (sectionId === "/") {
+            navigate("/");
+            scrollToSection(sectionId);
+        } else if (sectionId === "/my-bookings") {
+            navigate("/my-bookings");
+        }
+        if (sectionId === "/home") {
+            navigate("/");
+        }
     };
 
     return (
@@ -39,14 +95,14 @@ export default function Header({ activeSection, scrollToSection }) {
                             <button
                                 key={item.id}
                                 onClick={() => handleNavClick(item.id)}
-                                className={`relative text-sm font-medium transition-all duration-300 hover:text-gray-900 ${
+                                className={`relative text-sm font-medium transition-all cursor-pointer duration-300 hover:text-gray-900 ${
                                     activeSection === item.id
                                         ? "text-gray-900"
                                         : "text-gray-600"
                                 }`}
                             >
                                 {item.label}
-                                {activeSection === item.id && (
+                                {location.pathname === item.id && (
                                     <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-800 to-gray-600 rounded-full" />
                                 )}
                             </button>
@@ -54,17 +110,29 @@ export default function Header({ activeSection, scrollToSection }) {
                     </nav>
 
                     {/* Desktop CTA */}
-                    <div className="hidden md:flex items-center space-x-4">
-                        <Button
-                            variant="ghost"
-                            className="text-gray-600 hover:text-gray-900 hover:bg-black/5"
-                        >
-                            Sign In
-                        </Button>
-                        <Button className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg shadow-gray-900/25 border-0 font-semibold">
-                            Get Started
-                        </Button>
-                    </div>
+                    {isAuthenticated && (
+                        <div className="bor der bord er-amber-800 flex items-center gap-2">
+                            <div className="font-semibold">
+                                {user?.name || "User"}
+                            </div>
+                            <div
+                                onClick={() => {
+                                    logout();
+                                }}
+                                className="hidden md:flex items-center space-x-4"
+                            >
+                                {!isLoading ? (
+                                    <Button className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg shadow-gray-900/25 border-0 font-semibold">
+                                        Logout
+                                    </Button>
+                                ) : (
+                                    <Button className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg shadow-gray-900/25 border-0 font-semibold">
+                                        <Loader2 className="animate-spin" />
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Mobile Menu Button */}
                     <button
@@ -93,14 +161,14 @@ export default function Header({ activeSection, scrollToSection }) {
                                 </button>
                             ))}
                             <div className="flex flex-col space-y-3 pt-4 border-t border-white/20">
-                                <Button
+                                {/* <Button
                                     variant="ghost"
                                     className="justify-start text-gray-600 hover:text-gray-900 hover:bg-black/5"
                                 >
-                                    Sign In
-                                </Button>
+                                    Logout
+                                </Button> */}
                                 <Button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg shadow-gray-900/25 font-semibold">
-                                    Get Started
+                                    Logout
                                 </Button>
                             </div>
                         </nav>

@@ -8,19 +8,70 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router";
 
 const JourneyCard = ({ journey, idx }) => {
     const [expandedJourney, setExpandedJourney] = useState(null);
-    const getTotalPrice = (flights) =>
-        flights.reduce((sum, f) => sum + parseInt(f.price), 0);
-    const formatDuration = (departure, arrival) => {
-        const duration = new Date(arrival) - new Date(departure);
-        const h = Math.floor(duration / (1000 * 60 * 60));
-        const m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-        return `${h}h ${m}m`;
+    const navigate = useNavigate();
+
+    const getEconomyPrice = (journey) => {
+        if (!journey || !Array.isArray(journey) || journey.length === 0)
+            return 0;
+        let total = 0;
+        for (const flight of journey) {
+            if (!flight || !flight.airplane || !flight.airplane.seat) {
+                total += parseFloat(flight?.price) || 0;
+                continue;
+            }
+            total += flight.price * flight.class_price_factor.economy;
+        }
+        return total.toFixed(2);
     };
+
+    // const formatDuration = (departure, arrival) => {
+    //     const duration = new Date(arrival) - new Date(departure);
+    //     console.log(duration);
+    //     const h = Math.floor(duration / (1000 * 60 * 60));
+    //     const m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+    //     return `${h}h ${m}m`;
+    // };
+    function formatDuration(startStr, endStr) {
+        // Convert strings like "16/8/2025, 1:00:00 pm" into Date objects
+        function parseDateTime(dateTimeStr) {
+            const [datePart, timePart, meridian] = dateTimeStr.split(/[\s,]+/);
+            const [day, month, year] = datePart.split("/").map(Number);
+            let [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+            // Convert 12h -> 24h format
+            if (meridian.toLowerCase() === "pm" && hours < 12) hours += 12;
+            if (meridian.toLowerCase() === "am" && hours === 12) hours = 0;
+
+            return new Date(year, month - 1, day, hours, minutes, seconds);
+        }
+
+        const start = parseDateTime(startStr);
+        const end = parseDateTime(endStr);
+
+        let diffMs = Math.abs(end - start); // difference in ms
+
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        diffMs %= 1000 * 60 * 60 * 24;
+
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        diffMs %= 1000 * 60 * 60;
+
+        const minutes = Math.floor(diffMs / (1000 * 60));
+        diffMs %= 1000 * 60;
+
+        return days == 0
+            ? `${hours}h ${minutes}m`
+            : `${days}d ${hours}h ${minutes}m`;
+    }
     return (
-        <div className="w-full max-w-[1000px] box-border overflow-x-hidden rounded-xl sm:rounded-3xl">
+        <div
+            key={idx}
+            className="w-full max-w-[1000px] box-border overflow-x-hidden rounded-xl sm:rounded-3xl"
+        >
             <div className="relative w-full max-w-full bg-white rounded-none sm:rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 box-border overflow-x-hidden">
                 {/* Top Section */}
                 <div className="px-2 sm:px-6 py-4 sm:py-8">
@@ -94,9 +145,9 @@ const JourneyCard = ({ journey, idx }) => {
                     {/* Dotted line */}
                     <div className="border-t-2 border-dashed border-gray-300 mb-4"></div>
                     {/* Details Row */}
-                    <div className="grid grid-cols-4 sm:grid-cols-4 gap-1 sm:gap-4 text-center bo rder-2 border-amber-700">
+                    <div className="grid grid-cols-5 sm:grid-cols-5  gap-1 sm:gap-4 text-center">
                         <div>
-                            <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                            <div className="text-xs text-gray-500 uppercase tracking-wide mb-1 ">
                                 Date
                             </div>
                             <div className="text-xs font-semibold text-gray-900 truncate">
@@ -108,88 +159,51 @@ const JourneyCard = ({ journey, idx }) => {
                                 Flight
                             </div>
                             <div className="text-xs font-semibold text-gray-900 truncate">
-                                {journey[0].flight_number}
+                                {journey[0].flight_number.toUpperCase()}
                             </div>
                         </div>
                         <div>
                             <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                                Seat
+                                Price (economy)
                             </div>
-                            <div className="text-xs font-semibold text-gray-900 truncate">
-                                12A
+                            <div className="text-sm font-semibold text-gray-900 truncate">
+                                ₹{getEconomyPrice(journey)}
                             </div>
                         </div>
-                        <div>
-                            <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                                Gate
-                            </div>
-                            <div className="text-xs font-semibold text-gray-900 truncate">
-                                B7
-                            </div>
+                        <div className="flex justify-center gap-2 col-span-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    setExpandedJourney(
+                                        expandedJourney === idx ? null : idx
+                                    )
+                                }
+                                className="border-gray-300 text-gray-800 hover:bg-gray-100 bg-white text-xs sm:text-sm px-3 py-4 flex-1 sm:flex-none"
+                            >
+                                {expandedJourney === idx ? "Hide" : "Details"}
+                                {expandedJourney === idx ? (
+                                    <ChevronUp className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
+                                ) : (
+                                    <ChevronDown className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
+                                )}
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    navigate("/booking", {
+                                        state: journey,
+                                    });
+                                }}
+                                className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg shadow-gray-900/25 font-semibold px-3 sm:px-4 text-xs sm:text-sm py-1 flex-1 sm:flex-none"
+                            >
+                                Book Flight
+                                <ArrowRight className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
+                            </Button>
                         </div>
                     </div>
                 </div>
                 {/* Bottom Section */}
-                <div className="px-2 sm:px-8 py-4 sm:py-8 bg-gray-50/50">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-                        <div className="flex items-start sm:items-center gap-2 sm:gap-4">
-                            <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                <span className="text-xs sm:text-sm text-gray-700 font-medium">
-                                    4.5
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4 text-gray-600" />
-                                <span className="text-xs sm:text-sm text-gray-700">
-                                    {formatDuration(
-                                        journey[0].departure_time,
-                                        journey.at(-1).arrival_time
-                                    )}
-                                </span>
-                            </div>
-                            <div className="text-xs sm:text-sm text-gray-600">
-                                {journey.length} flight
-                                {journey.length > 1 ? "s" : ""}
-                            </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-                            <div className="text-left sm:text-right">
-                                <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                                    ₹{getTotalPrice(journey)}
-                                </div>
-                                <div className="text-xs sm:text-sm text-gray-600">
-                                    per person
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-1 sm:gap-3 w-full sm:w-auto">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                        setExpandedJourney(
-                                            expandedJourney === idx ? null : idx
-                                        )
-                                    }
-                                    className="border-gray-300 text-gray-800 hover:bg-gray-100 bg-white text-xs px-3 py-2 flex-1 sm:flex-none"
-                                >
-                                    {expandedJourney === idx
-                                        ? "Hide"
-                                        : "Details"}
-                                    {expandedJourney === idx ? (
-                                        <ChevronUp className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
-                                    ) : (
-                                        <ChevronDown className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
-                                    )}
-                                </Button>
-                                <Button className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg shadow-gray-900/25 font-semibold px-3 sm:px-4 text-xs sm:text-sm py-2 flex-1 sm:flex-none">
-                                    Book Flight
-                                    <ArrowRight className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 {/* Expanded Flight Details */}
                 {expandedJourney === idx && (
                     <div className="border-t border-gray-200 bg-white overflow-x-auto">

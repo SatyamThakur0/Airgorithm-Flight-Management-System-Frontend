@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/sections/Login";
-import Header from "@/components/sections/Header";
-import Hero from "@/components/sections/Hero";
-import Features from "@/components/sections/Features";
-import Services from "@/components/sections/Services";
-import Testimonials from "@/components/sections/Testimonials";
-import CTA from "@/components/sections/CTA";
-import Footer from "@/components/sections/Footer";
-import AnimatedBackground from "@/components/ui/AnimatedBackground";
+import { Routes, Route } from "react-router-dom";
+import Header from "./components/sections/Header";
+import Hero from "./components/sections/Hero";
+import AnimatedBackground from "./components/ui/AnimatedBackground";
 import Journey from "./components/Journey/journey";
+import BookingPage from "./components/booking/BookingPage";
+import AuthPage from "./components/auth/Auth";
+import { BookingHistory } from "./components/myBookings/BookingHistory";
 
 export default function ModernFlightBooking() {
     const [activeSection, setActiveSection] = useState("home");
 
     useEffect(() => {
         const handleScroll = () => {
-            const sections = ["home", "features", "services", "testimonials"];
+            const sections = ["home", "features", "services", "my-bookings"];
             const scrollPosition = window.scrollY + 100;
 
             for (const section of sections) {
@@ -56,10 +53,10 @@ export default function ModernFlightBooking() {
     };
 
     return (
-        <BrowserRouter>
-            {/* Fixed Header on all routes */}
+        <>
             <Header
                 activeSection={activeSection}
+                setActiveSection={setActiveSection}
                 scrollToSection={scrollToSection}
             />
             <div className="pt-20">
@@ -71,18 +68,16 @@ export default function ModernFlightBooking() {
                                 <AnimatedBackground />
                                 <main>
                                     <Hero scrollToBooking={scrollToBooking} />
-                                    <Features />
-                                    <Services />
-                                    <Testimonials />
-                                    <CTA scrollToBooking={scrollToBooking} />
                                 </main>
-                                <Footer />
                             </div>
                         }
                     />
+                    <Route path="/auth" element={<AuthPage />} />
                     <Route path="/journey" element={<Journey />} />
+                    <Route path="/booking" element={<BookingPage />} />
+                    <Route path="/my-bookings" element={<BookingHistory />} />
                 </Routes>
             </div>
-        </BrowserRouter>
+        </>
     );
 }
