@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 const JourneyCard = ({ journey, idx }) => {
     const [expandedJourney, setExpandedJourney] = useState(null);
     const navigate = useNavigate();
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const getEconomyPrice = (journey) => {
         if (!journey || !Array.isArray(journey) || journey.length === 0)
@@ -81,7 +82,9 @@ const JourneyCard = ({ journey, idx }) => {
                             <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 truncate">
                                 {
                                     new Date(journey[0].departure_time)
-                                        .toLocaleString()
+                                        .toLocaleString("en-IN", {
+                                            timeZone: userTimeZone,
+                                        })
                                         .split(", ")[1]
                                 }
                             </div>
@@ -122,7 +125,9 @@ const JourneyCard = ({ journey, idx }) => {
                             <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 truncate">
                                 {
                                     new Date(journey.at(-1).arrival_time)
-                                        .toLocaleString()
+                                        .toLocaleString("en-IN", {
+                                            timeZone: userTimeZone,
+                                        })
                                         .split(", ")[1]
                                 }
                             </div>
